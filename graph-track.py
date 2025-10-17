@@ -1,35 +1,45 @@
 import heapq
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import time
 
-# matplotlib.use('qt5agg')
-
 # Sample input data
 # Format for nodes: [node_id, x_coordinate, y_coordinate] 
 INPUT_NODES = [
-    [1, 0.1, 0.2],
-    [2, 0.4, 0.5],
-    [3, 0.7, 0.8],
-    [4, 0.2, 0.9],
-    [5, 0.6, 0.1],
-    [6, 0.9, 0.4],
-    [7, 0.3, 0.6],
+    [1, 0.1, 0.1],
+    [2, 0.1, 0.9],
+    [3, 0.3, 0.1],
+    [4, 0.3, 0.9],
+    [5, 0.5, 0.1],
+    [6, 0.5, 0.9],
+    [7, 0.7, 0.1],
+    [8, 0.7, 0.9],
+    [9, 0.9, 0.1],
+    [10, 0.9, 0.9],
+
 ]
 
 # Format for edges: [node1, node2, weight]
 INPUT_EDGES = [
-    [1, 2, 1],
+    [1, 2, 5],
+    [3, 4, 5],
+    [5, 6, 5],
+    [7, 8, 5],
+    [9, 10, 5],
     [1, 3, 2],
-    [2, 4, 1],
-    [2, 5, 3],
-    [3, 6, 1],
-    [4, 5, 2],
+    [2, 4, 2],
+    [5, 7, 2],
+    [6, 8, 2],
+    [7, 9, 2],
+    [8, 10, 2],
+    [1, 5, 3],
+    [2, 6, 3],
+    [3, 7, 3],
+    [4, 8, 3],
 ]
 
 START_NODE = 1
-END_NODE = 6
+END_NODE = 8
 
 def dijkstra(graph, start, end):
     queue = [(0, start)]

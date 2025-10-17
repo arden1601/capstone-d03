@@ -1,0 +1,11 @@
+<package format="3">
+  <name>wall_detector_robot</name>
+  <version>0.0.1</version>
+  <description>Wall detector robot using turtlesim</description>
+  <maintainer email="you@example.com">You</maintainer>
+  <license>MIT</license>
+  <buildtool_depend>ament_python</buildtool_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>turtlesim</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+</package>
