@@ -11,10 +11,7 @@ export default function RobotControl({ robotStatus, onSendActions }: RobotContro
   const [actionQueue, setActionQueue] = useState<ActionQueueItem[]>([]);
 
   const addAction = (action: RobotAction) => {
-    const newItem: ActionQueueItem = {
-      action,
-      id: Date.now().toString(),
-    };
+    const newItem: ActionQueueItem = { action, id: Date.now().toString() };
     setActionQueue([...actionQueue, newItem]);
   };
 
@@ -43,95 +40,65 @@ export default function RobotControl({ robotStatus, onSendActions }: RobotContro
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Robot Control</h2>
+    <div className="robot-control-card">
+      <h2 className="card-title">Robot Control</h2>
 
       {/* Robot Status */}
-      <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-        <h3 className="font-semibold mb-2 text-gray-700">Status</h3>
-        <div className="grid grid-cols-2 gap-2 text-sm">
+      <div className="status-section">
+        <h3 className="section-subtitle">Status</h3>
+        <div className="status-grid">
           <div>
-            <span className="text-gray-600">Moving:</span>
-            <span className={`ml-2 font-semibold ${robotStatus.isMoving ? 'text-green-600' : 'text-gray-400'}`}>
+            <span className="label">Moving:</span>
+            <span className={`value ${robotStatus.isMoving ? 'text-green' : 'text-muted'}`}>
               {robotStatus.isMoving ? 'Yes' : 'No'}
             </span>
           </div>
           <div>
-            <span className="text-gray-600">Action:</span>
-            <span className="ml-2 font-semibold text-blue-600">
+            <span className="label">Action:</span>
+            <span className="value text-blue">
               {robotStatus.currentAction || 'None'}
             </span>
           </div>
-          {robotStatus.battery !== undefined && (
-            <div>
-              <span className="text-gray-600">Battery:</span>
-              <span className="ml-2 font-semibold text-orange-600">
-                {robotStatus.battery}%
-              </span>
-            </div>
-          )}
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="mb-6">
-        <h3 className="font-semibold mb-3 text-gray-700">Add Actions</h3>
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => addAction('forward')}
-            className="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg transition-colors"
-          >
-            <ArrowUp className="w-5 h-5" />
-            Forward
+      <div className="actions-section">
+        <h3 className="section-subtitle">Add Actions</h3>
+        <div className="actions-grid">
+          <button onClick={() => addAction('forward')} className="btn btn-blue">
+            <ArrowUp className="w-5 h-5" /> Forward
           </button>
-          <button
-            onClick={() => addAction('left')}
-            className="flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-600 text-white py-3 px-4 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Left
+          <button onClick={() => addAction('left')} className="btn btn-purple">
+            <ArrowLeft className="w-5 h-5" /> Left
           </button>
-          <button
-            onClick={() => addAction('right')}
-            className="flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-600 text-white py-3 px-4 rounded-lg transition-colors"
-          >
-            <ArrowRight className="w-5 h-5" />
-            Right
+          <button onClick={() => addAction('right')} className="btn btn-purple">
+            <ArrowRight className="w-5 h-5" /> Right
           </button>
-          <button
-            onClick={() => addAction('stop')}
-            className="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg transition-colors"
-          >
-            <StopCircle className="w-5 h-5" />
-            Stop
+          <button onClick={() => addAction('stop')} className="btn btn-red">
+            <StopCircle className="w-5 h-5" /> Stop
           </button>
         </div>
       </div>
 
       {/* Action Queue */}
-      <div className="mb-4">
-        <h3 className="font-semibold mb-3 text-gray-700">
-          Action Queue ({actionQueue.length})
+      <div className="queue-section">
+        <h3 className="section-subtitle">
+          Action Queue <span className="queue-count">({actionQueue.length})</span>
         </h3>
-        <div className="bg-gray-50 rounded-lg p-3 min-h-[100px] max-h-[200px] overflow-y-auto">
+        <div className="queue-list">
           {actionQueue.length === 0 ? (
-            <p className="text-gray-400 text-center py-8">No actions in queue</p>
+            <p className="empty-queue">No actions in queue</p>
           ) : (
             <div className="space-y-2">
               {actionQueue.map((item, index) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between bg-white p-2 rounded border border-gray-200"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-500 text-sm font-mono">#{index + 1}</span>
+                <div key={item.id} className="queue-item">
+                  <div className="queue-item-content">
+                    <span className="queue-index">#{index + 1}</span>
                     {getActionIcon(item.action)}
-                    <span className="capitalize font-medium text-gray-700">{item.action}</span>
+                    <span className="queue-label">{item.action}</span>
                   </div>
-                  <button
-                    onClick={() => removeAction(item.id)}
-                    className="text-red-500 hover:text-red-700 transition-colors"
-                  >
+                  <button onClick={() => removeAction(item.id)} className="delete-btn">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -142,22 +109,20 @@ export default function RobotControl({ robotStatus, onSendActions }: RobotContro
       </div>
 
       {/* Control Buttons */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="bottom-buttons">
         <button
           onClick={executeQueue}
           disabled={actionQueue.length === 0}
-          className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 px-4 rounded-lg transition-colors"
+          className="btn btn-green"
         >
-          <Play className="w-5 h-5" />
-          Execute
+          <Play className="w-5 h-5" /> Execute
         </button>
         <button
           onClick={clearQueue}
           disabled={actionQueue.length === 0}
-          className="flex items-center justify-center gap-2 bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 px-4 rounded-lg transition-colors"
+          className="btn btn-gray"
         >
-          <Trash2 className="w-5 h-5" />
-          Clear
+          <Trash2 className="w-5 h-5" /> Clear
         </button>
       </div>
     </div>
