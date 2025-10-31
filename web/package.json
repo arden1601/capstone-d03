@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "lucide-react": "^0.546.0",
+    "mqtt": "^5.14.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-is": "^19.2.0",
     "recharts": "^3.3.0",
+    "vite-plugin-node-polyfills": "^0.24.0",
     "ws": "^8.18.3"
   },
   "devDependencies": {

@@ -33,7 +33,7 @@ export default function SensorDisplay({ currentData }: SensorDisplayProps) {
     time: getTimeLabel(data.timestamp),
     temperature: data.temperature,
     humidity: data.humidity,
-    soilMoisture: data.soilMoisture,
+    soilMoisture: data.soil_moisture,
   }));
 
   const getMoistureLevel = (value: number) => {
@@ -69,10 +69,10 @@ export default function SensorDisplay({ currentData }: SensorDisplayProps) {
           {currentData ? (
             <>
               <div className="text-3xl font-bold text-blue-600 mb-1">
-                {currentData.soilMoisture.toFixed(1)}%
+                {currentData.soil_moisture.toFixed(1)}%
               </div>
-              <div className={`inline-block px-2 py-1 rounded text-xs font-semibold ${getMoistureLevel(currentData.soilMoisture).bg} ${getMoistureLevel(currentData.soilMoisture).color}`}>
-                {getMoistureLevel(currentData.soilMoisture).label}
+              <div className={`inline-block px-2 py-1 rounded text-xs font-semibold ${getMoistureLevel(currentData.soil_moisture).bg} ${getMoistureLevel(currentData.soil_moisture).color}`}>
+                {getMoistureLevel(currentData.soil_moisture).label}
               </div>
             </>
           ) : (

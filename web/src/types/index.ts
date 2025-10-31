@@ -3,7 +3,7 @@ export type RobotAction = 'forward' | 'left' | 'right' | 'stop';
 
 // Sensor data types
 export interface SensorData {
-  soilMoisture: number; // Percentage (0-100)
+  soil_moisture: number; // Percentage (0-100)
   temperature: number; // Celsius
   humidity: number; // Percentage (0-100)
   timestamp: string;

@@ -4,13 +4,18 @@ import RobotControl from './components/RobotControl';
 import SensorDisplay from './components/SensorDisplay';
 import RFIDNavigation from './components/RFIDNavigation';
 import robotService from './services/robotService';
+import mqtt from 'mqtt';
 import type { RobotAction, SensorData, RFIDPosition, RobotStatus } from './types';
 import './App.css';
+
+
 
 function App() {
   const [connected, setConnected] = useState(false);
   const [wsUrl, setWsUrl] = useState('ws://localhost:8080');
   const [showSettings, setShowSettings] = useState(false);
+  const [mqttStatus, setMqttStatus] = useState("disconnected");
+  const [client, setClient] = useState(null);
 
   const [sensorData, setSensorData] = useState<SensorData | null>(null);
   const [rfidPosition, setRfidPosition] = useState<RFIDPosition | null>(null);
@@ -21,17 +26,58 @@ function App() {
     battery: 100,
   });
 
+  // useEffect(() => {
+  //   robotService.onConnectionChange((isConnected) => setConnected(isConnected));
+  //   robotService.onSensorData((data: SensorData) => setSensorData(data));
+  //   robotService.onRFIDPosition((position: RFIDPosition) => {
+  //     setRfidPosition(position);
+  //     setRobotStatus((prev) => ({ ...prev, currentPosition: position }));
+  //   });
+  //   robotService.onRobotStatus((status: RobotStatus) => setRobotStatus(status));
+  //   robotService.connect();
+  //   return () => robotService.disconnect();
+  // }, []);
+
+  // MQTT Connection
   useEffect(() => {
-    robotService.onConnectionChange((isConnected) => setConnected(isConnected));
-    robotService.onSensorData((data: SensorData) => setSensorData(data));
-    robotService.onRFIDPosition((position: RFIDPosition) => {
-      setRfidPosition(position);
-      setRobotStatus((prev) => ({ ...prev, currentPosition: position }));
+    const mqttClient = mqtt.connect('ws://localhost:9001');
+
+  mqttClient.on('connect', () => {
+      console.log('Connected to MQTT broker');
+      setMqttStatus('connected');
+      mqttClient.subscribe('sensor/dht22');
     });
-    robotService.onRobotStatus((status: RobotStatus) => setRobotStatus(status));
-    robotService.connect();
-    return () => robotService.disconnect();
-  }, []);
+
+    mqttClient.on('message', (topic, message) => {
+      if (topic === 'sensor/dht22') {
+        try {
+          const data = JSON.parse(message.toString());
+          const sensorData: SensorData = {
+            temperature: data.temperature,
+            humidity: data.humidity,
+            soil_moisture: data.soil_moisture,
+            timestamp: new Date().toISOString()
+          };
+          setSensorData(sensorData);
+        } catch (error) {
+          console.error('Error parsing MQTT message:', error);
+        }
+      }
+    });
+
+    mqttClient.on('error', (error) => {
+      console.error('MQTT connection error:', error);
+      setMqttStatus('error');
+    });
+
+    setClient(mqttClient);
+
+    return () => {
+      if (mqttClient) {
+        mqttClient.end();
+      }
+    };
+  }, []); 
 
   const handleSendActions = (actions: RobotAction[]) => {
     const success = robotService.sendActions(actions);
