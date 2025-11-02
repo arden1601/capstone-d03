@@ -3,6 +3,7 @@ import { Wifi, WifiOff, Settings } from 'lucide-react';
 import RobotControl from './components/RobotControl';
 import SensorDisplay from './components/SensorDisplay';
 import RFIDNavigation from './components/RFIDNavigation';
+import MapNavigation from './components/MapNavigation';
 import robotService from './services/robotService';
 import mqtt from 'mqtt';
 import type { RobotAction, SensorData, RFIDPosition, RobotStatus } from './types';
@@ -52,7 +53,8 @@ function App() {
       if (topic === 'sensor/dht22') {
         try {
           const data = JSON.parse(message.toString());
-          const sensorData: SensorData = {
+          const 
+          sensorData: SensorData = {
             temperature: data.temperature,
             humidity: data.humidity,
             soil_moisture: data.soil_moisture,
@@ -77,11 +79,35 @@ function App() {
         mqttClient.end();
       }
     };
-  }, []); 
+  }, []);
+
+  const convertActionToNumber = (action: RobotAction): number => {
+    const actionMap: Record<RobotAction, number> = {
+      left: 0,
+      right: 1,
+      forward: 2,
+      stop: 3,
+    };
+    return actionMap[action];
+  };
 
   const handleSendActions = (actions: RobotAction[]) => {
-    const success = robotService.sendActions(actions);
-    if (!success) alert('Failed to send actions. Please check connection.');
+    // Convert actions to numbers
+    const numericActions = actions.map(convertActionToNumber);
+
+    // Publish to MQTT
+    if (client && mqttStatus) {
+      client.publish('robot/control', JSON.stringify(numericActions), (error) => {
+        if (error) {
+          console.error('MQTT publish error:', error);
+          alert('Failed to send actions via MQTT.');
+        } else {
+          console.log('Actions sent via MQTT:', numericActions);
+        }
+      });
+    } else {
+      alert('MQTT client not connected. Please check connection.');
+    }
   };
 
   const handleUpdateUrl = () => {
@@ -156,6 +182,9 @@ function App() {
                 robotStatus={robotStatus}
                 onSendActions={handleSendActions}
               />
+            </section>
+            <section className="card">
+              <MapNavigation onSendActions={handleSendActions} />
             </section>
             <section className="card">
               <RFIDNavigation currentPosition={rfidPosition} />

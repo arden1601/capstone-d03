@@ -366,3 +366,59 @@ body,
   margin-top: 1rem;
 }
 
+/* ===== Map Navigation Card ===== */
+.map-navigation-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 2rem;
+  backdrop-filter: blur(12px);
+  color: #e2e8f0;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  transition: all 0.3s ease;
+}
+
+.map-navigation-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+.space-y-1 > * + * {
+  margin-top: 0.25rem;
+}
+
+.space-y-3 > * + * {
+  margin-top: 0.75rem;
+}
+
+.space-y-4 > * + * {
+  margin-top: 1rem;
+}
+
+.ml-4 {
+  margin-left: 1rem;
+}
+
+.list-decimal {
+  list-style-type: decimal;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn:disabled:hover {
+  transform: none;
+}
+
+.queue-count {
+  font-size: 0.9rem;
+  color: #60a5fa;
+  font-weight: 500;
+}
+
+.col-span-2 {
+  grid-column: span 2;
+}
+

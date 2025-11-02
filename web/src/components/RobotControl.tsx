@@ -26,6 +26,7 @@ export default function RobotControl({ robotStatus, onSendActions }: RobotContro
   const executeQueue = () => {
     if (actionQueue.length === 0) return;
     const actions = actionQueue.map(item => item.action);
+    console.log('Executing actions:', actions);
     onSendActions(actions);
     setActionQueue([]);
   };
